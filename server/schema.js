@@ -44,8 +44,19 @@ const schema = new graphql.GraphQLSchema({
         args: {
           id: { type: graphql.GraphQLNonNull(graphql.GraphQLID) }
         },
-        resolve: async (root, args, context, info) =>
-          await db.models.User.findById(args.id).exec()
+        resolve: async (root, args, context, info) => {
+          try {
+            const foundUser = await db.models.User.findById(args._id).exec();
+            if (foundUser) {
+              return foundUser;
+            } else {
+              const err = new Error("User not found");
+              throw err;
+            }
+          } catch (err) {
+            return err;
+          }
+        }
       },
       messages: {
         type: graphql.GraphQLList(MessageType),
@@ -73,8 +84,15 @@ const schema = new graphql.GraphQLSchema({
           password: { type: graphql.GraphQLNonNull(graphql.GraphQLString) }
         },
         resolve: async (root, args, context, info) => {
-          const newUser = new db.models.User(args);
-          return await newUser.save();
+          try {
+            const newUser = new db.models.User(args);
+            return await newUser.save();
+          } catch (err) {
+            if (err.code === 11000) {
+              const err = new Error("That username/email is unavailable");
+              return err;
+            }
+          }
         }
       },
       createMessage: {
