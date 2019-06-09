@@ -17,7 +17,7 @@ const MessageType = new graphql.GraphQLObjectType({
   fields: {
     _id: { type: graphql.GraphQLID },
     content: { type: graphql.GraphQLString },
-    author: { type: graphql.GraphQLID },
+    author: { type: UserType },
     createdAt: { type: graphql.GraphQLString }
   }
 });
@@ -42,7 +42,7 @@ const schema = new graphql.GraphQLSchema({
       user: {
         type: UserType,
         args: {
-          id: { type: graphql.GraphQLNonNull(graphql.GraphQLID) }
+          _id: { type: graphql.GraphQLNonNull(graphql.GraphQLID) }
         },
         resolve: async (root, args, context, info) => {
           try {
@@ -67,7 +67,21 @@ const schema = new graphql.GraphQLSchema({
               .sort({ createdAt: args.sortByCreatedAt })
               .exec();
           } else {
-            return await db.models.Message.find().exec();
+            return await db.models.Message.find()
+              .populate("author")
+              .exec();
+          }
+        }
+      },
+      message: {
+        type: MessageType,
+        args: {_id: {type: graphql.GraphQLNonNull(graphql.GraphQLID)} },
+        resolve: async (root, args, context, info) => {
+          try {
+            const foundMessage = await db.models.Message.findById(args._id).populate("author").exec();
+            return foundMessage;
+          } catch(err) {
+            return err;
           }
         }
       }
