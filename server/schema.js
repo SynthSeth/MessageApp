@@ -17,7 +17,8 @@ const MessageType = new graphql.GraphQLObjectType({
   fields: {
     _id: { type: graphql.GraphQLID },
     content: { type: graphql.GraphQLString },
-    author: { type: graphql.GraphQLID }
+    author: { type: graphql.GraphQLID },
+    createdAt: { type: graphql.GraphQLString }
   }
 });
 

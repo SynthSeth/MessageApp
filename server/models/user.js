@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
     email: String,
     password: String,
     profileImageUrl: String,
-    messages: [{ _id: mongoose.Schema.Types.ObjectId }]
+    messages: [{ type: mongoose.Schema.Types.ObjectId, required: true }]
   },
   { timestamps: true }
 );
