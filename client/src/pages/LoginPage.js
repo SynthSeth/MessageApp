@@ -1,34 +1,39 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { apiCall, setAuthorizationHeaderToken } from "../services";
+import { queryApi, setAuthorizationHeaderToken } from "../services";
 import logo from "../MessageApp-logo.svg";
 
 export default props => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  function handleChange(e) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
-
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    axios({
-      url: "http://localhost:8080/graphql",
-      method: "post",
-      data: {
-        query: `
-          query {
-            users {
-              username
-            }
-            }
-          `
+    try {
+      const result = await queryApi(`
+      mutation {
+        login(email: "${email}", password: "${password}") {
+          email,
+          token
+        }
+        }
+      `);
+
+      if (result.errors) {
+        const errorMessage = result.errors[0].message;
+        setEmail("");
+        setPassword("");
+
+        alert(errorMessage);
+      } else {
+        localStorage.setItem("token", result.data.login.token);
+        props.history.push("/lobby");
       }
-    }).then(result => {
-      console.log(result.data);
-    });
+    } catch (err) {
+      const errorMessage = "That email is not registered to any user";
+      alert(errorMessage);
+    }
   }
 
   return (
@@ -40,15 +45,15 @@ export default props => {
         <label htmlFor="email">Email</label>
         <input
           type="text"
-          value={formData.email}
-          onChange={handleChange}
+          value={email}
+          onChange={e => setEmail(e.target.value)}
           name="email"
         />
         <label htmlFor="password">Password</label>
         <input
           type="text"
-          value={formData.password}
-          onChange={handleChange}
+          value={password}
+          onChange={e => setPassword(e.target.value)}
           name="password"
         />
       </form>

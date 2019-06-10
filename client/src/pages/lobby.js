@@ -1,3 +1,10 @@
 import React from "react";
+import {Route} from "react-router-dom"
 
-export default () => <h1>Lobby Page</h1>
+export default () => (
+  <>
+    <Route exact path="/lobby">
+      <h1>Lobby page</h1>
+    </Route>
+  </>
+)

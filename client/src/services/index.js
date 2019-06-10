@@ -1,15 +1,19 @@
 import axios from "axios";
 
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/graphql',
-  timeout: 1000,
-  headers: { 'Content-Type': 'application/json' },
-});
-
-export function apiCall(method, url, data) {
+export function queryApi(query) {
   return new Promise((resolve, reject) => {
-    axios[method](url, data)
-      .then(res => resolve(res))
+    axios({
+      url: "http://localhost:8080/graphql",
+      method: "post",
+      data: {
+        query: `
+        ${query}
+        `
+      }
+    })
+      .then(result => {
+        resolve(result.data);
+      })
       .catch(err => reject(err));
   });
 }
