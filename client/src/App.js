@@ -7,15 +7,13 @@ import {
   withRouter
 } from "react-router-dom";
 import WithAuth from "./hocs/WithAuth";
-import LobbyPage from "./pages/lobby";
+import LobbyPage from "./pages/Lobby";
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <WithAuth>
-          <LobbyPage />
-        </WithAuth>
+        <WithAuth ProtectedComponent={LobbyPage} />
       </Router>
     </div>
   );
