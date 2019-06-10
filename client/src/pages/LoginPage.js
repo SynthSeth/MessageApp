@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { apiCall, setAuthorizationHeaderToken } from "../services";
 import logo from "../MessageApp-logo.svg";
 
 export default props => {
@@ -12,7 +14,21 @@ export default props => {
   function handleSubmit(e) {
     e.preventDefault();
 
-    
+    axios({
+      url: "http://localhost:8080/graphql",
+      method: "post",
+      data: {
+        query: `
+          query {
+            users {
+              username
+            }
+            }
+          `
+      }
+    }).then(result => {
+      console.log(result.data);
+    });
   }
 
   return (
