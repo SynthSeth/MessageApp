@@ -131,8 +131,7 @@ const schema = new graphql.GraphQLSchema({
             return newUser;
           } catch (err) {
             if (err.code === 11000) {
-              const err = new Error("That username/email is unavailable");
-              return err;
+              return new graphql.GraphQLError("That username/password is unavailable");
             }
           }
         }
@@ -174,7 +173,7 @@ const schema = new graphql.GraphQLSchema({
               email: args.email
             });
             if (!foundUser) {
-              throw new Error("A user with that email does not exist");
+              throw new graphql.GraphQLError("That email is not registered to any user.");
             }
 
             const isCorrectPassword = await bcrypt.compare(
