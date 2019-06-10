@@ -7,7 +7,7 @@ import jwtDecode from "jwt-decode";
 export default ({ ProtectedComponent }) => (
   <>
     <Switch>
-      <PrivateRoute path="/lobby" component={ProtectedComponent} />
+      <PrivateRoute exact path={["/lobby", "/"]} component={ProtectedComponent} />
       <Route path={["/auth/login", "/auth/signup"]} component={AuthMenu} />
       <NotFound />
     </Switch>

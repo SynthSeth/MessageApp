@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import WithAuth from "./hocs/WithAuth";
 import LobbyPage from "./pages/Lobby";
+import "./App.scss";
 
 function App() {
   return (

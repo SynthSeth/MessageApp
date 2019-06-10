@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { queryApi, setAuthorizationHeaderToken } from "../services";
+import icon from "../MessageApp-icon.svg";
 import logo from "../MessageApp-logo.svg";
+import authStyles from "./Auth.module.scss";
 
 export default props => {
   const [email, setEmail] = useState("");
@@ -22,7 +24,6 @@ export default props => {
 
       if (result.errors) {
         const errorMessage = result.errors[0].message;
-        setEmail("");
         setPassword("");
 
         alert(errorMessage);
@@ -37,29 +38,39 @@ export default props => {
   }
 
   return (
-    <>
-      <h1>MessageApp</h1>
-      <img src={logo} alt="MessageApp's logo" />
-      <form onSubmit={handleSubmit}>
+    <div className={authStyles.layout}>
+      <img
+        src={logo}
+        alt="MessageApp's logo"
+        style={{ margin: "1.25rem", marginLeft: "4rem" }}
+      />
+      <img src={icon} alt="MessageApp's icon" />
+      <form onSubmit={handleSubmit} className={authStyles.Form}>
         <button type="submit">Login</button>
-        <label htmlFor="email">Email</label>
-        <input
-          type="text"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          name="email"
-        />
-        <label htmlFor="password">Password</label>
-        <input
-          type="text"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          name="password"
-        />
+        <div className={authStyles.formGroup}>
+          <label htmlFor="email">Email</label>
+          <br />
+          <input
+            type="text"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            name="email"
+          />
+        </div>
+        <div className={authStyles.formGroup}>
+          <label htmlFor="password">Password</label>
+          <br />
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            name="password"
+          />
+        </div>
       </form>
       <p>
-        or<Link to="/auth/signup">Sign Up</Link>
+        Or <Link to="/auth/signup">Sign Up</Link>
       </p>
-    </>
+    </div>
   );
 };
