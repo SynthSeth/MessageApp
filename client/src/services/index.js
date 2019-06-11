@@ -1,6 +1,11 @@
 import axios from "axios";
 
 export function queryApi(query) {
+
+  if (!axios.defaults.headers.common["Authorization"]) {
+    setAuthorizationHeaderToken(localStorage.token);
+  }
+
   return new Promise((resolve, reject) => {
     axios({
       url: "http://localhost:8080/graphql",
