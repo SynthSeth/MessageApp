@@ -1,6 +1,5 @@
 body {
   width: 100vw;
-  height: 100vh;
 
   background: #98A9BA;
   background: url("./background.svg");
@@ -19,4 +18,9 @@ body {
     text-decoration: none;
     color: inherit;
   }
+}
+
+.App {
+  overflow-y: hidden;
+  height: 100vh;
 }

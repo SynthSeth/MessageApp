@@ -8,13 +8,13 @@ import lobbyStyles from "./Lobby.module.scss";
 
 export default () => (
   <Route exact path="/lobby">
-    <div className={lobbyStyles.layout}>
+    <>
       <div className={lobbyStyles.header}>
         <img src={logo} alt="MessageApp's logo" />
         <img src={icon} alt="MessageApp's icon" />
       </div>
       <MessageFeed />
-    </div>
+    </>
   </Route>
 );
 
@@ -39,19 +39,21 @@ function MessageFeed() {
     ));
   }
 
+  useEffect(() => {
+    const msgList = document.getElementById("msgList");
+    msgList.scrollTop = msgList.scrollHeight + msgList.clientHeight;
+  });
+
   return (
-    <div className={lobbyStyles.messageContainer}>
-      <ul id="message-container">
-        {fetchedMessages ? messagesArray : <h1>loading messages</h1>}
-      </ul>
-    </div>
+    <ul className={lobbyStyles.messageFeed} id="msgList">
+      {fetchedMessages ? messagesArray : <h1>loading messages</h1>}
+    </ul>
   );
 }
 
 const Message = ({ content, author, createdAt }) => {
   return (
     <li>
-      <div>
         <img
           src={author.profileImageUrl}
           alt={"profile image of " + author.username}
@@ -59,7 +61,6 @@ const Message = ({ content, author, createdAt }) => {
         <p>{author.username}</p>
         <Moment fromNow>{+createdAt}</Moment>
         <p>{content}</p>
-      </div>
     </li>
   );
 };

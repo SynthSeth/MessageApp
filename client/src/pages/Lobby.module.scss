@@ -13,14 +13,17 @@
   }
 }
 
-.messageContainer {
+.messageFeed {
   background: white;
   border: 1px solid black;
   margin: 0 1.7rem;
+  padding: 0;
   border-radius: 8px;
 
   height: 80vh;
+  overflow-x: hidden;
   overflow-y: scroll;
+  
   li {
     list-style-type: none;
   }
