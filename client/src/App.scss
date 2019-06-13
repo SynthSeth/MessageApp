@@ -23,4 +23,9 @@ body {
 .App {
   overflow-y: hidden;
   height: 100vh;
+  
 }
+
+ * {
+   box-sizing: border-box;
+ }

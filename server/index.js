@@ -22,13 +22,12 @@ const expressPlayground = require("graphql-playground-middleware-express")
 app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
 
 // Error handler
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   if (err) {
-    res.error(err);
+    res.status(500).json(err);
   } else {
     const error = new Error("Not found");
-    res.status = 404;
-    res.error(error);
+    res.status(404).json(error);
   }
 });
 

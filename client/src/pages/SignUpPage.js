@@ -19,7 +19,7 @@ export default props => {
       const result = await queryApi(`
       mutation {
         createUser(email: "${email}", username: "${username}", 
-                   profileImageUrl: ${profileImageUrl} password: "${password}") {
+                   profileImageUrl: "${profileImageUrl}" password: "${password}") {
           email,
           username,
           profileImageUrl,

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Moment from "react-moment";
 import { Route } from "react-router-dom";
 import { queryApi } from "../services";
-import icon from "../MessageApp-icon.svg";
 import logo from "../MessageApp-logo.svg";
 import lobbyStyles from "./Lobby.module.scss";
 
@@ -11,9 +10,9 @@ export default () => (
     <>
       <div className={lobbyStyles.header}>
         <img src={logo} alt="MessageApp's logo" />
-        <img src={icon} alt="MessageApp's icon" />
       </div>
       <MessageFeed />
+      <MessageForm />
     </>
   </Route>
 );
@@ -54,13 +53,55 @@ function MessageFeed() {
 const Message = ({ content, author, createdAt }) => {
   return (
     <li>
-        <img
-          src={author.profileImageUrl}
-          alt={"profile image of " + author.username}
-        />
-        <p>{author.username}</p>
-        <Moment fromNow>{+createdAt}</Moment>
-        <p>{content}</p>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          margin: "0 0.5rem"
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "flex-start" }}>
+          <img
+            src={author.profileImageUrl}
+            alt={"profile image of " + author.username}
+          />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginLeft: "0.5rem",
+              justifyContent: "flex-start"
+            }}
+          >
+            <p
+              style={{
+                color: "#2A81D8",
+                fontSize: "18px",
+                fontWeight: 400,
+                letterSpacing: "2px",
+                position: "relative",
+                bottom: "10px"
+              }}
+            >
+              {author.username}
+            </p>
+            <Moment fromNow style={{ position: "relative", bottom: "25px" }}>
+              {+createdAt}
+            </Moment>
+          </div>
+        </div>
+        <p
+          style={{
+            fontWeight: 200,
+            fontSize: "18px",
+            position: "relative",
+            bottom: "25px",
+            letterSpacing: "1.25px"
+          }}
+        >
+          {content}
+        </p>
+      </div>
     </li>
   );
 };
@@ -83,6 +124,59 @@ async function fetchMessages() {
 
     const messages = result.data.messages;
     return messages;
+  } catch (err) {
+    console.log("There was a problem loading messages"); // refetch messages again # if times
+    return false;
+  }
+}
+
+const MessageForm = () => {
+  const [content, setContent] = useState("");
+  const handleChange = e => setContent(e.target.value);
+
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    createMessage(content);
+    setContent("");
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className={lobbyStyles.messageForm}>
+      <textarea
+        placeholder="Enter a message"
+        onChange={handleChange}
+        value={content}
+        onKeyDown={e => {
+          if (e.keyCode == 13 && !e.shiftKey) {
+            // prevent default behavior
+            e.preventDefault();
+            // submit form
+            handleSubmit(e);
+          }
+        }}
+      />
+    </form>
+  );
+};
+
+async function createMessage(content) {
+  try {
+    const result = await queryApi(`
+      mutation {
+        createMessage(content: "${content}") {
+          content,
+          createdAt,
+          author {
+            username,
+            profileImageUrl
+          }
+        }
+      }
+    `);
+
+    console.log(result.data);
+    return result.data;
   } catch (err) {
     console.log("There was a problem loading messages"); // refetch messages again # if times
     return false;
