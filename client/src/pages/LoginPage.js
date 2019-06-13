@@ -29,6 +29,7 @@ export default props => {
         alert(errorMessage);
       } else {
         localStorage.setItem("token", result.data.login.token);
+        setAuthorizationHeaderToken(result.data.login.token);
         props.history.push("/lobby");
       }
     } catch (err) {

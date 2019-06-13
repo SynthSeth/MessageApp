@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Route } from "react-router-dom";
-import moment from "moment";
 import Moment from "react-moment";
+import { Route } from "react-router-dom";
 import { queryApi } from "../services";
 import icon from "../MessageApp-icon.svg";
 import logo from "../MessageApp-logo.svg";
@@ -35,7 +34,6 @@ function MessageFeed() {
       }
     })();
   } else {
-
     messagesArray = messages.map(message => (
       <Message key={message._id} {...message} />
     ));
@@ -43,14 +41,9 @@ function MessageFeed() {
 
   return (
     <div className={lobbyStyles.messageContainer}>
-      {fetchedMessages ? (
-        <>
-          <h1>Loaded Messages successful</h1>
-          <ul>{messagesArray}</ul>
-        </>
-      ) : (
-        <h1>loading messages</h1>
-      )}
+      <ul id="message-container">
+        {fetchedMessages ? messagesArray : <h1>loading messages</h1>}
+      </ul>
     </div>
   );
 }
@@ -59,9 +52,12 @@ const Message = ({ content, author, createdAt }) => {
   return (
     <li>
       <div>
-        <img src={author.profileImageUrl} alt={"profile image of " + author.username} />
+        <img
+          src={author.profileImageUrl}
+          alt={"profile image of " + author.username}
+        />
         <p>{author.username}</p>
-        <Moment fromNow >{+createdAt}</Moment>
+        <Moment fromNow>{+createdAt}</Moment>
         <p>{content}</p>
       </div>
     </li>

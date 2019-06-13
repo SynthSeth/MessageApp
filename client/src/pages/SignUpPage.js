@@ -36,6 +36,7 @@ export default props => {
         alert(errorMessage);
       } else {
         localStorage.setItem("token", result.data.createUser.token);
+        setAuthorizationHeaderToken(result.data.createUser.token);
         props.history.push("/lobby");
       }
     } catch (err) {
