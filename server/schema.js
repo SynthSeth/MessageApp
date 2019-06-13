@@ -9,8 +9,8 @@ const UserType = new graphql.GraphQLObjectType({
     _id: { type: graphql.GraphQLID },
     username: { type: graphql.GraphQLString },
     email: { type: graphql.GraphQLString },
+    profileImageUrl: { type: graphql.GraphQLString },
     password: { type: graphql.GraphQLString },
-    createdAt: { type: graphql.GraphQLString },
     token: { type: graphql.GraphQLString }
   }
 });
@@ -75,10 +75,11 @@ const schema = new graphql.GraphQLSchema({
 
           if (args.sortByCreatedAt) {
             return db.models.Message.find()
+              .populate("author")
               .sort({ createdAt: args.sortByCreatedAt })
               .exec();
           } else {
-            return await db.models.Message.find()
+            return db.models.Message.find()
               .populate("author")
               .exec();
           }
@@ -91,7 +92,6 @@ const schema = new graphql.GraphQLSchema({
           if (!context.isauthenticated) {
             return new graphql.GraphQLError("Unauthenticated request");
           }
-
           try {
             const foundMessage = await db.models.Message.findById(args._id)
               .populate("author")
@@ -112,6 +112,9 @@ const schema = new graphql.GraphQLSchema({
         args: {
           username: { type: graphql.GraphQLNonNull(graphql.GraphQLString) },
           email: { type: graphql.GraphQLNonNull(graphql.GraphQLString) },
+          profileImageUrl: {
+            type: graphql.GraphQLNonNull(graphql.GraphQLString)
+          },
           password: { type: graphql.GraphQLNonNull(graphql.GraphQLString) }
         },
         resolve: async (root, args, context, info) => {
@@ -123,6 +126,7 @@ const schema = new graphql.GraphQLSchema({
               {
                 username: newUser.username,
                 email: newUser.email,
+                profileImageUrl: newUser.profileImageUrl,
                 _id: newUser._id
               },
               process.env.JWT_SECRET
@@ -131,7 +135,9 @@ const schema = new graphql.GraphQLSchema({
             return newUser;
           } catch (err) {
             if (err.code === 11000) {
-              return new graphql.GraphQLError("That username/password is unavailable");
+              return new graphql.GraphQLError(
+                "That username/password is unavailable"
+              );
             }
           }
         }
@@ -139,7 +145,8 @@ const schema = new graphql.GraphQLSchema({
       createMessage: {
         type: MessageType,
         args: {
-          content: { type: graphql.GraphQLNonNull(graphql.GraphQLString) }
+          content: { type: graphql.GraphQLNonNull(graphql.GraphQLString) },
+          createdAt: { type: graphql.GraphQLString, defaultValue: Date.now() }
         },
         resolve: async (root, args, context, info) => {
           try {
@@ -149,8 +156,10 @@ const schema = new graphql.GraphQLSchema({
 
             const newMessageModel = await new db.models.Message({
               content: args.content,
-              author: context.decodedToken._id
+              author: context.decodedToken._id,
+              createdAt: args.createdAt
             });
+
             await newMessageModel.save();
             const newMessage = await db.models.Message.findById(
               newMessageModel._id
@@ -173,7 +182,9 @@ const schema = new graphql.GraphQLSchema({
               email: args.email
             });
             if (!foundUser) {
-              throw new graphql.GraphQLError("That email is not registered to any user.");
+              throw new graphql.GraphQLError(
+                "That email is not registered to any user."
+              );
             }
 
             const isCorrectPassword = await bcrypt.compare(

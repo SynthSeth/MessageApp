@@ -8,6 +8,7 @@ import authStyles from "./Auth.module.scss";
 export default props => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [profileImageUrl, setProfileImageUrl] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -17,9 +18,11 @@ export default props => {
     try {
       const result = await queryApi(`
       mutation {
-        createUser(email: "${email}", username: "${username}" password: "${password}") {
+        createUser(email: "${email}", username: "${username}", 
+                   profileImageUrl: ${profileImageUrl} password: "${password}") {
           email,
           username,
+          profileImageUrl,
           token
         }
         }
@@ -32,7 +35,6 @@ export default props => {
 
         alert(errorMessage);
       } else {
-
         localStorage.setItem("token", result.data.createUser.token);
         props.history.push("/lobby");
       }
@@ -70,6 +72,16 @@ export default props => {
             value={email}
             onChange={e => setEmail(e.target.value)}
             name="email"
+          />
+        </div>
+        <div className={authStyles.formGroup}>
+          <label htmlFor="profileImageUrl">Profile Image Url</label>
+          <br />
+          <input
+            type="text"
+            value={profileImageUrl}
+            onChange={e => setProfileImageUrl(e.target.value)}
+            name="profileImageUrl"
           />
         </div>
         <div className={authStyles.formGroup}>

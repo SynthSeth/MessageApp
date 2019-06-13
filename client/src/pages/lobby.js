@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Route } from "react-router-dom";
+import moment from "moment";
+import Moment from "react-moment";
 import { queryApi } from "../services";
 import icon from "../MessageApp-icon.svg";
 import logo from "../MessageApp-logo.svg";
@@ -33,7 +35,7 @@ function MessageFeed() {
       }
     })();
   } else {
-    console.log(messages);
+
     messagesArray = messages.map(message => (
       <Message key={message._id} {...message} />
     ));
@@ -57,8 +59,9 @@ const Message = ({ content, author, createdAt }) => {
   return (
     <li>
       <div>
+        <img src={author.profileImageUrl} alt={"profile image of " + author.username} />
         <p>{author.username}</p>
-        <p>{createdAt}</p>
+        <Moment fromNow >{+createdAt}</Moment>
         <p>{content}</p>
       </div>
     </li>
@@ -69,12 +72,13 @@ async function fetchMessages() {
   try {
     const result = await queryApi(`
       query {
-        messages {
+        messages(sortByCreatedAt: "asc") {
           _id,
           content,
           createdAt,
           author {
-            username
+            username,
+            profileImageUrl
           }
         }
       }
