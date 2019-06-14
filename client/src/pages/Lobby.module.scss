@@ -15,8 +15,8 @@
   padding-top: 1rem;
   border-radius: 8px;
 
+  min-height: 470px;
   max-height: 85vh;
-  min-height: 567px;
   overflow-x: hidden;
   overflow-y: scroll;
 
@@ -62,5 +62,5 @@
 }
 
 .loading {
-
+  height: 85vh;
 }

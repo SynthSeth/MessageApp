@@ -158,7 +158,7 @@ async function fetchMessages() {
     `);
 
     // If request is unauthenticated, then token is invalid/expired --> redirect to login
-    if (result.errors[0].message === "Unauthenticated request") {
+    if (result.errors && result.errors[0].message === "Unauthenticated request") {
       localStorage.clear();
       window.location.href = "/auth/login";
     }
