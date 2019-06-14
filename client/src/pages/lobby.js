@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Moment from "react-moment";
 import { Route } from "react-router-dom";
 import { queryApi } from "../services";
 import logo from "../MessageApp-logo.svg";
 import lobbyStyles from "./Lobby.module.scss";
+import io from "socket.io-client";
+const socket = io("http://localhost:8080");
 
 export default () => (
   <Route exact path="/lobby">
@@ -17,37 +19,50 @@ export default () => (
   </Route>
 );
 
-function MessageFeed() {
-  const [fetchedMessages, setFetchedMessages] = useState(false);
-  const [messages, setMessages] = useState([]);
+class MessageFeed extends React.Component {
+  constructor(props) {
+    super(props);
 
-  let messagesArray = null;
+    this.state = { messages: [] };
 
-  if (!fetchedMessages) {
-    (async function() {
+    socket.on("NEW_MESSAGE", newMessage => {
+      this.setState({
+        messages: this.state.messages.slice().concat(newMessage)
+      });
+
+      const msgList = document.getElementById("msgList");
+      msgList.scrollTop = msgList.scrollHeight + msgList.clientHeight;
+    });
+  }
+
+  async componentDidMount() {
+    if (this.state.messages.length) {
+      return;
+    } else {
       const loadedMessages = await fetchMessages();
 
       if (loadedMessages) {
-        setFetchedMessages(true);
-        setMessages(messages.concat(loadedMessages));
+        this.setState({
+          messages: this.state.messages.slice().concat(loadedMessages)
+        });
+
+        const msgList = document.getElementById("msgList");
+        msgList.scrollTop = msgList.scrollHeight + msgList.clientHeight;
       }
-    })();
-  } else {
-    messagesArray = messages.map(message => (
-      <Message key={message._id} {...message} />
-    ));
+    }
   }
 
-  useEffect(() => {
-    const msgList = document.getElementById("msgList");
-    msgList.scrollTop = msgList.scrollHeight + msgList.clientHeight;
-  });
+  render() {
+    const messagesArray = this.state.messages.map(message => (
+      <Message key={message._id} {...message} />
+    ));
 
-  return (
-    <ul className={lobbyStyles.messageFeed} id="msgList">
-      {fetchedMessages ? messagesArray : <h1>loading messages</h1>}
-    </ul>
-  );
+    return (
+      <ul className={lobbyStyles.messageFeed} id="msgList">
+        {messagesArray.length ? messagesArray : <h1>loading messages</h1>}
+      </ul>
+    );
+  }
 }
 
 const Message = ({ content, author, createdAt }) => {
@@ -148,7 +163,7 @@ const MessageForm = () => {
         onChange={handleChange}
         value={content}
         onKeyDown={e => {
-          if (e.keyCode == 13 && !e.shiftKey) {
+          if (e.keyCode === 13 && !e.shiftKey) {
             // prevent default behavior
             e.preventDefault();
             // submit form
@@ -175,7 +190,6 @@ async function createMessage(content) {
       }
     `);
 
-    console.log(result.data);
     return result.data;
   } catch (err) {
     console.log("There was a problem loading messages"); // refetch messages again # if times

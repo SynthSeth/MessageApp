@@ -164,6 +164,8 @@ const schema = new graphql.GraphQLSchema({
             const newMessage = await db.models.Message.findById(
               newMessageModel._id
             ).populate("author");
+
+            context.io.emit("NEW_MESSAGE", newMessage);
             return newMessage;
           } catch (err) {
             throw err;
