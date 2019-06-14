@@ -8,7 +8,7 @@ export function queryApi(query) {
 
   return new Promise((resolve, reject) => {
     axios({
-      url: "http://localhost:8080/graphql",
+      url: "http://192.168.0.2:8080/graphql",
       method: "post",
       data: {
         query: `

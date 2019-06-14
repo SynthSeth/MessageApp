@@ -5,7 +5,7 @@ import { queryApi } from "../services";
 import logo from "../MessageApp-logo.svg";
 import lobbyStyles from "./Lobby.module.scss";
 import io from "socket.io-client";
-const socket = io("http://localhost:8080");
+const socket = io("http://192.168.0.2:8080");
 
 export default () => (
   <Route exact path="/lobby">
@@ -59,7 +59,20 @@ class MessageFeed extends React.Component {
 
     return (
       <ul className={lobbyStyles.messageFeed} id="msgList">
-        {messagesArray.length ? messagesArray : <h1>loading messages</h1>}
+        {messagesArray.length ? (
+          messagesArray
+        ) : (
+          <div className="mesh-loader">
+            <div className="set-one">
+              <div className="circle" />
+              <div className="circle" />
+            </div>
+            <div className="set-two">
+              <div className="circle" />
+              <div className="circle" />
+            </div>
+          </div>
+        )}
       </ul>
     );
   }
@@ -79,6 +92,11 @@ const Message = ({ content, author, createdAt }) => {
           <img
             src={author.profileImageUrl}
             alt={"profile image of " + author.username}
+            onError={e => {
+              e.target.onerror = null;
+              e.target.src =
+                "https://cdn.pixabay.com/photo/2014/04/03/10/32/businessman-310819_1280.png";
+            }}
           />
           <div
             style={{
