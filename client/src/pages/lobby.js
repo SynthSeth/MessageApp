@@ -62,14 +62,16 @@ class MessageFeed extends React.Component {
         {messagesArray.length ? (
           messagesArray
         ) : (
-          <div className="mesh-loader">
-            <div className="set-one">
-              <div className="circle" />
-              <div className="circle" />
-            </div>
-            <div className="set-two">
-              <div className="circle" />
-              <div className="circle" />
+          <div className={lobbyStyles.loading}>
+            <div className="mesh-loader">
+              <div className="set-one">
+                <div className="circle" />
+                <div className="circle" />
+              </div>
+              <div className="set-two">
+                <div className="circle" />
+                <div className="circle" />
+              </div>
             </div>
           </div>
         )}
@@ -154,6 +156,12 @@ async function fetchMessages() {
         }
       }
     `);
+
+    // If request is unauthenticated, then token is invalid/expired --> redirect to login
+    if (result.errors[0].message === "Unauthenticated request") {
+      localStorage.clear();
+      window.location.href = "/auth/login";
+    }
 
     const messages = result.data.messages;
     return messages;
