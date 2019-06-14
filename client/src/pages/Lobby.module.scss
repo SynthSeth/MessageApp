@@ -15,7 +15,8 @@
   padding-top: 1rem;
   border-radius: 8px;
 
-  height: 85vh;
+  max-height: 85vh;
+  min-height: 567px;
   overflow-x: hidden;
   overflow-y: scroll;
 

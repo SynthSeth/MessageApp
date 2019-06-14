@@ -146,7 +146,10 @@ const schema = new graphql.GraphQLSchema({
         type: MessageType,
         args: {
           content: { type: graphql.GraphQLNonNull(graphql.GraphQLString) },
-          createdAt: { type: graphql.GraphQLString, defaultValue: Date.now() }
+          createdAt: {
+            type: graphql.GraphQLString,
+            defaultValue: Date.now().toString()
+          }
         },
         resolve: async (root, args, context, info) => {
           try {
