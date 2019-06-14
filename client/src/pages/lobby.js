@@ -7,17 +7,17 @@ import lobbyStyles from "./Lobby.module.scss";
 import io from "socket.io-client";
 const socket = io("http://192.168.0.2:8080");
 
-export default () => (
-  <Route exact path="/lobby">
-    <>
+export default () => {
+  return (
+    <Route exact path={["/lobby", "/"]}>
       <div className={lobbyStyles.header}>
         <img src={logo} alt="MessageApp's logo" />
       </div>
       <MessageFeed />
       <MessageForm />
-    </>
-  </Route>
-);
+    </Route>
+  );
+};
 
 class MessageFeed extends React.Component {
   constructor(props) {
@@ -36,9 +36,7 @@ class MessageFeed extends React.Component {
   }
 
   async componentDidMount() {
-    if (this.state.messages.length) {
-      return;
-    } else {
+    if (!this.state.messages.length) {
       const loadedMessages = await fetchMessages();
 
       if (loadedMessages) {
@@ -47,7 +45,9 @@ class MessageFeed extends React.Component {
         });
 
         const msgList = document.getElementById("msgList");
-        msgList.scrollTop = msgList.scrollHeight + msgList.clientHeight;
+        if (msgList) {
+          msgList.scrollTop = msgList.scrollHeight + msgList.clientHeight;
+        }
       }
     }
   }
@@ -119,7 +119,7 @@ const Message = ({ content, author, createdAt }) => {
               {author.username}
             </p>
             <Moment fromNow style={{ position: "relative", bottom: "25px" }}>
-              {+createdAt}
+              {+createdAt || createdAt}
             </Moment>
           </div>
         </div>

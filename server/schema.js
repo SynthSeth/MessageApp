@@ -75,12 +75,12 @@ const schema = new graphql.GraphQLSchema({
 
           if (args.sortByCreatedAt) {
             return db.models.Message.find()
-              .populate("author")
+              .populate("author", ["username", "profileImageUrl"])
               .sort({ createdAt: args.sortByCreatedAt })
               .exec();
           } else {
             return db.models.Message.find()
-              .populate("author")
+              .populate("author", ["username", "profileImageUrl"])
               .exec();
           }
         }
@@ -147,8 +147,7 @@ const schema = new graphql.GraphQLSchema({
         args: {
           content: { type: graphql.GraphQLNonNull(graphql.GraphQLString) },
           createdAt: {
-            type: graphql.GraphQLString,
-            defaultValue: Date.now().toString()
+            type: graphql.GraphQLString
           }
         },
         resolve: async (root, args, context, info) => {
@@ -157,16 +156,24 @@ const schema = new graphql.GraphQLSchema({
               return new graphql.GraphQLError("Unauthenticated request");
             }
 
-            const newMessageModel = await new db.models.Message({
+            const newMessageSchema = {
               content: args.content,
-              author: context.decodedToken._id,
-              createdAt: args.createdAt
-            });
+              author: context.decodedToken._id
+            };
+
+            if (args.createdAt) {
+              newMessageSchema.createdAt = args.createdAt;
+            }
+
+            const newMessageModel = await new db.models.Message(
+              newMessageSchema
+            );
 
             await newMessageModel.save();
+
             const newMessage = await db.models.Message.findById(
               newMessageModel._id
-            ).populate("author");
+            ).populate("author", ["username", "profileImageUrl"]);
 
             context.io.emit("NEW_MESSAGE", newMessage);
             return newMessage;

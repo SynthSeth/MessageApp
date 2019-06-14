@@ -7,7 +7,11 @@ const messageSchema = new mongoose.Schema({
     ref: "User"
   },
   content: { type: String, require: true },
-  createdAt: { type: mongoose.Schema.Types.String , default: Date.now().toString() }
+  createdAt: {
+    type: Date,
+    default: () => new Date().toString(),
+    required: true
+  }
 });
 
 module.exports = mongoose.model("Message", messageSchema);
