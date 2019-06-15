@@ -5,13 +5,25 @@ import { queryApi } from "../services";
 import logo from "../MessageApp-logo.svg";
 import lobbyStyles from "./Lobby.module.scss";
 import io from "socket.io-client";
-const socket = io("http://192.168.0.2:8080");
+const socket = io(
+  process.env.NODE_ENV === "production"
+    ? "/"
+    : "http://localhost:8080/"
+);
 
 export default () => {
   return (
     <Route exact path={["/lobby", "/"]}>
       <div className={lobbyStyles.header}>
         <img src={logo} alt="MessageApp's logo" />
+        <button
+          onClick={() => {
+            localStorage.clear();
+            window.location.href = "/auth/login";
+          }}
+        >
+          Sign Out
+        </button>
       </div>
       <MessageFeed />
       <MessageForm />
@@ -158,7 +170,10 @@ async function fetchMessages() {
     `);
 
     // If request is unauthenticated, then token is invalid/expired --> redirect to login
-    if (result.errors && result.errors[0].message === "Unauthenticated request") {
+    if (
+      result.errors &&
+      result.errors[0].message === "Unauthenticated request"
+    ) {
       localStorage.clear();
       window.location.href = "/auth/login";
     }

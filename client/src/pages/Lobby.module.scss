@@ -5,6 +5,23 @@
   img {
     height: 2rem;
   }
+
+  button {
+    font-size: 1rem;
+    border: none;
+    background: none;
+    border-radius: 1rem;
+    margin-top: 2px;
+    background: white;
+    border: 2px solid whitesmoke;
+    color: #2680db;
+    font-weight: 200;
+    &:hover {
+      transition-duration: 0.35s;
+      color: rgb(138, 195, 252);
+      background: rgb(238, 237, 237);
+    }
+  }
 }
 
 .messageFeed {
@@ -15,6 +32,7 @@
   padding-top: 1rem;
   border-radius: 8px;
 
+  height: 85vh;
   min-height: 470px;
   max-height: 85vh;
   overflow-x: hidden;

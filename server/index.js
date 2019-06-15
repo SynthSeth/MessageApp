@@ -7,11 +7,24 @@ const graphqlHTTP = require("express-graphql");
 const schema = require("./schema");
 const cors = require("cors");
 const ensureAuthentication = require("./middleware/auth");
-
 const io = require("socket.io")(server);
 
 app.use(cors());
 
+app.use((req, res, next) => {
+  if (
+    req.url !== "/graphql" &&
+    req.url !== "/playground" &&
+    req.url !== "/" &&
+    !req.url.includes("/static")
+  ) {
+    res.redirect("/");
+  } else {
+    next();
+  }
+});
+
+app.use(express.static("./build"));
 app.use(
   "/graphql",
   ensureAuthentication,
@@ -23,7 +36,6 @@ app.use(
     schema: schema
   })
 );
-
 // Dev playground for graphQL
 const expressPlayground = require("graphql-playground-middleware-express")
   .default;
@@ -42,7 +54,3 @@ app.use((err, req, res, next) => {
 server.listen(process.env.PORT, () =>
   console.log(`Server listening on port ${process.env.PORT}`)
 );
-
-io.on("connection", socket => {
-  console.log("A socket has connected");
-});
