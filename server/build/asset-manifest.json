@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.f6ed41cc.chunk.css",
+    "main.js": "/static/js/main.ca0cf03d.chunk.js",
+    "main.js.map": "/static/js/main.ca0cf03d.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/js/2.9bb6e60d.chunk.js": "/static/js/2.9bb6e60d.chunk.js",
+    "static/js/2.9bb6e60d.chunk.js.map": "/static/js/2.9bb6e60d.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.02110a88b3345f839fb6f10625881c52.js": "/precache-manifest.02110a88b3345f839fb6f10625881c52.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.f6ed41cc.chunk.css.map": "/static/css/main.f6ed41cc.chunk.css.map",
+    "static/media/MessageApp-icon.svg": "/static/media/MessageApp-icon.f23c8f11.svg",
+    "static/media/MessageApp-logo.svg": "/static/media/MessageApp-logo.5f5a2b93.svg",
+    "static/media/App.scss": "/static/media/background.07174441.svg"
+  }
+}
