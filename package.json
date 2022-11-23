@@ -14,7 +14,7 @@
     "graphql-playground-middleware-express": "^1.7.12",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.14",
-    "socket.io": "^2.2.0",
+    "socket.io": "^2.5.0",
     "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
